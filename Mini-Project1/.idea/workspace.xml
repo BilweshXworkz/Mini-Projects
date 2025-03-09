@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ed88c8af-0b2a-403f-9bb8-93b542577f16" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$" beforeDir="false" afterPath="$PROJECT_DIR$" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/.smarttomcat/mini-project/conf/catalina.policy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/.smarttomcat/mini-project/conf/catalina.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/.smarttomcat/mini-project/conf/context.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/.smarttomcat/mini-project/conf/jaspic-providers.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/.smarttomcat/mini-project/conf/jaspic-providers.xsd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/.smarttomcat/mini-project/conf/logging.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/.smarttomcat/mini-project/conf/server.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/.smarttomcat/mini-project/conf/tomcat-users.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/.smarttomcat/mini-project/conf/tomcat-users.xsd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/.smarttomcat/mini-project/conf/web.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/src/main/java/com/xworkz/xworkzapp/config/SpringConfiguration.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/src/main/java/com/xworkz/xworkzapp/config/SpringWebInitializer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/src/main/java/com/xworkz/xworkzapp/controller/UserRegistrationController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/src/main/java/com/xworkz/xworkzapp/dto/UserRegistrationDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/src/main/java/com/xworkz/xworkzapp/entity/UserRegistrationEntity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/src/main/java/com/xworkz/xworkzapp/model/LocationEnum.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/src/main/java/com/xworkz/xworkzapp/repository/UserRegistrationRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/src/main/java/com/xworkz/xworkzapp/repository/UserRegistrationRepositoryImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/src/main/java/com/xworkz/xworkzapp/service/UserRegistrationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/src/main/java/com/xworkz/xworkzapp/service/UserRegistrationServiceImp.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/src/main/resources/META-INF/persistence.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/src/main/webapp/WEB-INF/web.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/src/main/webapp/forgotpassword.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/src/main/webapp/home.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/src/main/webapp/image/img.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/src/main/webapp/index.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/src/main/webapp/response.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/src/main/webapp/signin.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/src/main/webapp/update.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini-project/src/main/webapp/welcome.jsp" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+        <option value="Enum" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="SYNC" />
+  </component>
+  <component name="LogFilters">
+    <option name="FILTER_ERRORS" value="false" />
+    <option name="FILTER_WARNINGS" value="false" />
+    <option name="FILTER_INFO" value="true" />
+    <option name="FILTER_DEBUG" value="true" />
+    <option name="CUSTOM_FILTER" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="2tqUzBkqR7xwFeDBaYd6BB1ShGA" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Smart Tomcat.Tomcat: mini-project.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Bilwesh/Desktop/Mini-Project/Mini-Project1&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\X-Workz\Mini-Project\mini-project\src\main\resources\META-INF" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\X-Workz\Mini-Project\mini-project\src\main\webapp" />
+      <recent name="E:\X-Workz\Mini-Project\mini-project\src\main\webapp\image" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="Tomcat: mini-project" type="com.poratu.idea.plugins.tomcat">
+      <predefined_log_file enabled="true" id="Tomcat Localhost Log" />
+      <predefined_log_file enabled="true" id="Tomcat Access Log" />
+      <predefined_log_file id="Tomcat Catalina Log" />
+      <predefined_log_file id="Tomcat Manager Log" />
+      <predefined_log_file id="Tomcat Host Manager Log" />
+      <option name="catalinaBase" value="" />
+      <option name="contextPath" value="/mini-project" />
+      <option name="docBase" value="$PROJECT_DIR$/src/main/webapp" />
+      <option name="extraClassPath" value="" />
+      <option name="tomcatInfo">
+        <TomcatInfo>
+          <option name="name" value="Apache Tomcat/9.0.38" />
+          <option name="path" value="$USER_HOME$/Downloads/apache-tomcat-9.0.38-windows-x64/apache-tomcat-9.0.38" />
+          <option name="version" value="9.0.38.0" />
+        </TomcatInfo>
+      </option>
+      <option name="vmOptions" value="" />
+      <module name="mini-project" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ed88c8af-0b2a-403f-9bb8-93b542577f16" name="Changes" comment="" />
+      <created>1741079358047</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1741079358047</updated>
+    </task>
+    <servers />
+  </component>
+</project>
