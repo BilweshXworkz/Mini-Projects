@@ -35,9 +35,10 @@
             query = "UPDATE UserRegistrationEntity u SET u.failedAttempts = :failedAttempts, u.accountLockedUntil = :accountLockedUntil WHERE u.emailId = :emailId"
     )
 
-//    @NamedQuery(name = "resetPassword",
-//            query = "UPDATE user UserRegistrationEntity user SET user.password =: newPassword WHERE user.email =: email ")
-
+    @NamedQuery(
+            name = "deleteByEmailId",
+            query = "DELETE FROM UserRegistrationEntity u WHERE u.emailId = :emailId"
+    )
 
     public class UserRegistrationEntity {
         @Id

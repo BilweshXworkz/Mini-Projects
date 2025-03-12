@@ -8,23 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script>
-        .navbar {
-            height: 70px; /* Fixed height */
-          }
 
-          .nav-item img {
-            width: 40px; /* Adjust width */
-            height: 40px; /* Adjust height */
-            border-radius: 50%; /* Optional: Make circular */
-          }
-
-          .dropdown-menu {
-            position: absolute !important;
-            top: 100%; /* Ensures it opens below the navbar */
-            left: auto;
-            right: 0;
-            z-index: 1050; /* Ensures it appears on top */
-          }
     </script>
 </head>
 <body>
@@ -38,9 +22,9 @@
                  </a>
                  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                    <li><a class="dropdown-item" href="fetchByEmail?emailId=${user.emailId}">Edit Profile</a></li>
-                   <li><a class="dropdown-item" href="#">Another action</a></li>
+                   <li><a class="dropdown-item" href="logout">Logout</a></li>
                    <li><hr class="dropdown-divider"></li>
-                   <li><a class="dropdown-item" href="#">Something else here</a></li>
+                   <li><a class="dropdown-item" href="deleteAccount?emailId=${user.emailId}">Delete</a></li>
                  </ul>
             </li>
            </ul>

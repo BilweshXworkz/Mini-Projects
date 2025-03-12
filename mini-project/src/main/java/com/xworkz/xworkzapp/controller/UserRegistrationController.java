@@ -10,6 +10,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Component
 @RequestMapping("/")
@@ -104,5 +107,21 @@ public class UserRegistrationController {
 
         model.addAttribute("message", "Password successfully updated!");
         return "signin.jsp";
+    }
+
+    @RequestMapping("logout")
+    public RedirectView logout(HttpServletRequest req){
+        req.getSession().invalidate();
+        RedirectView redirectView = new RedirectView();
+        redirectView.setUrl(req.getContextPath());
+        return redirectView;
+    }
+
+    @RequestMapping("deleteAccount")
+    public RedirectView deleteByEmail(@RequestParam("emailId") String emailId, HttpServletRequest req){
+        userRegistrationService.deleteByEmailId(emailId);
+        RedirectView redirectView = new RedirectView();
+        redirectView.setUrl(req.getContextPath());
+        return redirectView;
     }
 }

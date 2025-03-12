@@ -17,4 +17,5 @@ public interface UserRegistrationRepository {
     void passwordUpdate(String emailId, String newPassword);
     public void resetPassword(String emailId, String newPassword);
     List<UserRegistrationEntity> findAll();
+    void deleteEmail(String emailId);
 }

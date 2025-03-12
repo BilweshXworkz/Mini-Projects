@@ -12,4 +12,5 @@ public interface UserRegistrationService {
     public String updatePassword(String emailId, String newPassword);
     String resetPassword(String email, String currentPassword, String newPassword);
     public String updatePassword(String emailId,String currentPassword, String newPassword);
+    void deleteByEmailId(String emailId);
 }

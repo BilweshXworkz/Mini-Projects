@@ -11,6 +11,9 @@ import org.springframework.stereotype.Repository;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -59,7 +62,7 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
 
         entity.setFailedAttempts(dto.getFailedAttempts() != null ? dto.getFailedAttempts() : 0);
         repository.save(entity);
-
+        sendAuthenticateEmail(dto.getEmailId(), randomPassword);
         return "Your account is created successfully. Use this password to log in: " + randomPassword;
     }
 
@@ -85,7 +88,8 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
 
     private String validateEmail(String email) {
         if (email == null || email.trim().isEmpty()) return "Email cannot be empty";
-        String emailRegex = "^(?=.*[a-z])(?=.*\\d)(?=.*[@.])[a-z\\d@.]+@[a-z]+\\.[a-z]{2,6}$";
+//        String emailRegex = "^(?=.*[a-z])(?=.*\\d)(?=.*[@.])[a-z\\d@.]+@[a-z]+\\.[a-z]{2,6}$";
+        String emailRegex = "^(?=.*[a-z])(?=.*\\d)(?=.*[@.])[a-z\\d@.]+@[a-z]+\\.[a-z]$";
         if (!email.matches(emailRegex)) {
             return "Invalid Email: Must contain a number, an uppercase letter, and a special character (@ or .)";
         }
@@ -277,6 +281,56 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
             return "Password updated successfully.";
         } else {
             return "User not found with email: " + emailId;
+        }
+    }
+
+    @Override
+    public void deleteByEmailId(String emailId) {
+        repository.deleteEmail(emailId);
+        if(repository != null) {
+            repository.deleteEmail(emailId);
+            System.out.println("User profile with id " + emailId + " deleted successfully");
+        } else {
+            System.out.println("User profile with id " + emailId + " not found");
+        }
+    }
+
+    public static void sendAuthenticateEmail(String emailId, String randomPassword) {
+
+        final String username = "bilweshbinay1025@gmail.com";
+        final String password = "lcdi pvao kojd mzhk";
+
+        Properties prop = new Properties();
+        prop.put("mail.smtp.host", "smtp.gmail.com");
+        prop.put("mail.smtp.port", "587");
+        prop.put("mail.smtp.auth", "true");
+        prop.put("mail.smtp.starttls.enable", "true"); //TLS
+
+        Session session = Session.getInstance(prop,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(username, password);
+                    }
+                });
+
+        try {
+
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("from@gmail.com"));
+            message.setRecipients(
+                    Message.RecipientType.TO,
+                    InternetAddress.parse("to_username_a@gmail.com, to_username_b@yahoo.com")
+            );
+            message.setSubject("Testing Gmail TLS");
+            message.setText("Dear Mail Crawler,"
+                    + "\n\n Please do not spam my email!");
+
+            Transport.send(message);
+
+            System.out.println("Done");
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
         }
     }
 

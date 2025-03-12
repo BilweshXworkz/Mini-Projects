@@ -165,6 +165,14 @@ public class UserRegistrationRepositoryImpl implements UserRegistrationRepositor
     }
 
     @Override
+    public void deleteEmail(String emailId) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        entityManager.createNamedQuery("deleteByEmailId").setParameter("emailId", emailId).executeUpdate();
+        entityManager.getTransaction().commit();
+    }
+
+    @Override
     public UserRegistrationEntity fetchEmail(String emailId) {
         if (emailId == null || emailId.trim().isEmpty()) {
             System.out.println("Invalid emailId provided.");
