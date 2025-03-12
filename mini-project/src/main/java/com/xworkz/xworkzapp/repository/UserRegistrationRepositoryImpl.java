@@ -1,11 +1,13 @@
 package com.xworkz.xworkzapp.repository;
 
 import com.xworkz.xworkzapp.entity.UserRegistrationEntity;
-import com.xworkz.xworkzapp.service.UserRegistrationService;
+import org.jboss.logging.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -60,7 +62,7 @@ public class UserRegistrationRepositoryImpl implements UserRegistrationRepositor
             UserRegistrationEntity user = fetchEmail(emailId);
 
             if (user != null) {
-                user = entityManager.merge(user); // Ensure it's managed before updating
+                user = entityManager.merge(user);
                 user.setFailedAttempts(user.getFailedAttempts() + 1);
 
                 if (user.getFailedAttempts() >= 3) {
@@ -83,7 +85,7 @@ public class UserRegistrationRepositoryImpl implements UserRegistrationRepositor
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try{
             entityManager.getTransaction().begin();
-            user = entityManager.merge(user); // Ensure it's managed
+            user = entityManager.merge(user);
             user.setFailedAttempts(0);
             user.setAccountLockedUntil(null);
             entityManager.getTransaction().commit();
@@ -93,6 +95,73 @@ public class UserRegistrationRepositoryImpl implements UserRegistrationRepositor
         } finally {
             entityManager.close();
         }
+    }
+
+    @Override
+    public void passwordUpdate(String emailId, String newPassword) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        UserRegistrationEntity user = fetchEmail(emailId);
+        if (user.getFailedAttempts() != null && user.getFailedAttempts() == -1) {
+            user.setFailedAttempts(0);
+        }
+        try {
+            entityManager.getTransaction().begin();
+
+            Query query = entityManager.createQuery("UPDATE UserRegistrationEntity u SET u.password = :password, " +
+                    "u.failedAttempts = CASE WHEN u.failedAttempts = -1 THEN 0 ELSE u.failedAttempts END " +
+                    "WHERE u.emailId = :emailId");
+            query.setParameter("password", newPassword);
+            query.setParameter("emailId", emailId);
+
+            int updatedRows = query.executeUpdate();
+
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            throw e;
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    @Override
+    public void resetPassword(String emailId, String newPassword) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+
+            Query query = entityManager.createQuery(
+                    "UPDATE UserRegistrationEntity u SET u.password = :password WHERE u.emailId = :emailId"
+            );
+
+            query.setParameter("password", newPassword);
+            query.setParameter("emailId", emailId);
+
+            int updatedRows = query.executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    @Override
+    public List<UserRegistrationEntity> findAll() {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            return entityManager.createQuery("SELECT u FROM UserRegistrationEntity u", UserRegistrationEntity.class)
+                    .getResultList();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }finally {
+            entityManager.close();
+        }
+        return null;
     }
 
     @Override
@@ -160,7 +229,7 @@ public class UserRegistrationRepositoryImpl implements UserRegistrationRepositor
     @Override
     public Optional<UserRegistrationEntity> findByEmail(String emailId) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        String query = "SELECT u FROM UserRegistrationEntity u WHERE u.emailId = :emailId";
+        String query = "SELECT u FROM UserRegistrationEntity u WHERE u.emailId = :emailId ";
         try {
             UserRegistrationEntity user = entityManager.createQuery(query, UserRegistrationEntity.class)
                     .setParameter("emailId", emailId)

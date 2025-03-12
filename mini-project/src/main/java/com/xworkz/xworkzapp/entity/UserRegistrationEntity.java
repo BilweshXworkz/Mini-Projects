@@ -35,6 +35,9 @@
             query = "UPDATE UserRegistrationEntity u SET u.failedAttempts = :failedAttempts, u.accountLockedUntil = :accountLockedUntil WHERE u.emailId = :emailId"
     )
 
+//    @NamedQuery(name = "resetPassword",
+//            query = "UPDATE user UserRegistrationEntity user SET user.password =: newPassword WHERE user.email =: email ")
+
 
     public class UserRegistrationEntity {
         @Id
@@ -60,7 +63,7 @@
         @Column(name = "date")
         private String date;
         @Column(name = "failed_attempts")
-        private Integer failedAttempts = 0;
+        private Integer failedAttempts;
         @Column(name = "account_locked_until")
         private LocalDateTime accountLockedUntil;
     }

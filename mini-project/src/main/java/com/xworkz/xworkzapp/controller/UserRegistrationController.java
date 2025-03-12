@@ -47,10 +47,15 @@ public class UserRegistrationController {
     public ModelAndView loginUser(@RequestParam("emailId") String emailId,
                                   @RequestParam("password") String password){
         UserRegistrationEntity user = userRegistrationService.authenticateUser(emailId, password);
-        if (user != null){
+
+        if (user != null) {
+            // If user exists but needs a password reset
+            if (user.getEmailId() == null) {
+                return new ModelAndView("resetPassword.jsp");
+            }
             return new ModelAndView("welcome.jsp", "user", user);
         }
-        return new ModelAndView("signin.jsp", "errorMessage", "Invalid Email or password.");
+        return new ModelAndView("signin.jsp", "errorMessage", "Invalid Email or Password.");
     }
 
     @RequestMapping ("fetchByEmail")
@@ -78,5 +83,26 @@ public class UserRegistrationController {
         return ResponseEntity.ok(response);
     }
 
+    @RequestMapping("resetPassword")
+    public String resetPassword(@RequestParam("emailId") String email,
+                                @RequestParam("password") String currentPassword,
+                                @RequestParam("newPassword") String newPassword,
+                                @RequestParam("confirmPassword") String confirmPassword,
+                                Model model) {
 
+        if (!newPassword.equals(confirmPassword)) {
+            model.addAttribute("errorMessage", "New password and confirm password do not match.");
+            return "forgetPassword";
+        }
+
+        String isUpdated = userRegistrationService.updatePassword(email, currentPassword, newPassword);
+
+        if (isUpdated.equals("Current password is incorrect.") || isUpdated.startsWith("User not found")) {
+            model.addAttribute("errorMessage", isUpdated);
+            return "forgetPassword";
+        }
+
+        model.addAttribute("message", "Password successfully updated!");
+        return "signin.jsp";
+    }
 }

@@ -9,13 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Repository
@@ -30,18 +28,39 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
     public String validAndSave(UserRegistrationDto dto) {
         String error;
 
-        if ((error = validateName(dto.getName())) != null) return error;
-        if ((error = validatePhoneNumber(dto.getPhoneNumber())) != null) return error;
-        if ((error = validateEmail(dto.getEmailId())) != null) return error;
-        if ((error = validatePassword(dto.getPassword())) != null) return error;
+        List<UserRegistrationEntity> allUsers = repository.findAll();
+
+        List<String> duplicateFields = new ArrayList<>();
+
+        for (UserRegistrationEntity user : allUsers) {
+            if (user.getName().equalsIgnoreCase(dto.getName())) duplicateFields.add("Name");
+            if (user.getEmailId().equalsIgnoreCase(dto.getEmailId())) duplicateFields.add("Email ID");
+            if (user.getPhoneNumber().equals(dto.getPhoneNumber())) duplicateFields.add("Phone Number");
+        }
+
+        if (!duplicateFields.isEmpty()) {
+            return "User already exists with " + String.join(", ", duplicateFields);
+        }
+
+        String randomPassword = generateRandomNumber();
+
+        if ((error = validatePassword(randomPassword)) != null) {
+            return "Generated password is invalid: " + error;
+        }
+
+        System.out.println("Generated Password: " + randomPassword);
+
+        String encryptedPassword = encryptPassword(randomPassword);
 
         UserRegistrationEntity entity = new UserRegistrationEntity();
         BeanUtils.copyProperties(dto, entity);
+        System.out.println(entity.getPassword());
+        entity.setPassword(encryptedPassword);
 
-        entity.setPassword(encryptPassword(dto.getPassword()));
+        entity.setFailedAttempts(dto.getFailedAttempts() != null ? dto.getFailedAttempts() : 0);
         repository.save(entity);
 
-        return null;
+        return "Your account is created successfully. Use this password to log in: " + randomPassword;
     }
 
     private String validateName(String name) {
@@ -73,6 +92,32 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
         return null;
     }
 
+    private String generateRandomNumber() {
+        int num = 8;
+        String upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lowerCase = "abcdefghijklmnopqrstuvwxyz";
+        String digits = "0123456789";
+        String specialChars = "@#$%^&+=!";
+        String allChars = upperCase + lowerCase + digits + specialChars;
+
+        Random random = new Random();
+        StringBuilder password = new StringBuilder();
+
+        password.append(upperCase.charAt(random.nextInt(upperCase.length())));
+        password.append(digits.charAt(random.nextInt(digits.length())));
+        password.append(specialChars.charAt(random.nextInt(specialChars.length())));
+
+        for (int i = 3; i < num; i++) {
+            password.append(allChars.charAt(random.nextInt(allChars.length())));
+        }
+
+        List<Character> passwordChars = password.chars().mapToObj(c -> (char) c).collect(Collectors.toList());
+        Collections.shuffle(passwordChars);
+
+        return passwordChars.stream().map(String::valueOf).collect(Collectors.joining());
+    }
+
+
     public String validatePassword(String password) {
         if (password == null || password.length() < 6)
             return "Password must be at least 6 characters long";
@@ -81,9 +126,6 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
         if (!password.matches(passwordRegex)) {
             return "Password must contain at least one uppercase letter, one number, and one special character";
         }
-//        String encrypted = encryptPassword(password);
-//        System.out.println("Encrypted Password: " + encrypted);
-
         return null;
     }
 
@@ -111,6 +153,7 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
         }
     }
 
+
     @Override
     public UserRegistrationEntity authenticateUser(String emailId, String password) {
         UserRegistrationEntity user = repository.fetchEmail(emailId);
@@ -119,19 +162,24 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
             return null;
         }
 
+        if (user.getFailedAttempts() != null && user.getFailedAttempts() == -1) {
+            System.out.println("User needs to reset password.");
+            return new UserRegistrationEntity(); // Return empty user to indicate reset
+        }
+
         if (user.getAccountLockedUntil() != null && user.getAccountLockedUntil().isAfter(LocalDateTime.now())) {
-            System.out.println("Account is locked Until " + user.getAccountLockedUntil());
+            System.out.println("Account is locked until " + user.getAccountLockedUntil());
             return null;
         }
 
         String decryptedPassword = decryptPassword(user.getPassword());
         if (!password.equals(decryptedPassword)) {
             System.out.println("Invalid credentials");
-            repository.updateFailedAttemps(emailId); // Increment failed attempts
+            repository.updateFailedAttemps(emailId);
             return null;
         }
 
-        repository.resetFailedAttempts(user); // Reset failed attempts on successful login
+        repository.resetFailedAttempts(user);
         return user;
     }
 
@@ -149,7 +197,6 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
         }
         return null;
     }
-
 
     @Override
     public Boolean updateUser(UserRegistrationDto dto) {
@@ -174,7 +221,6 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
         return repository.saveUpdate(entity, updatePassword);
     }
 
-    @Override
     public String updatePassword(String emailId, String newPassword) {
         Optional<UserRegistrationEntity> userOptional = repository.findByEmail(emailId);
         if (userOptional.isPresent()){
@@ -188,4 +234,50 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
             return "User not found with email: " + emailId;
         }
     }
+
+    @Override
+    public String resetPassword(String email, String currentPassword, String newPassword) {
+        UserRegistrationEntity user = repository.fetchEmail(email);
+        if (user == null) {
+            return "User not found";
+        }
+
+        String decryptedPassword = decryptPassword(user.getPassword());
+
+        if (!decryptedPassword.equals(currentPassword)) {
+            return "Current password is incorrect.";
+        }
+
+        validatePassword(newPassword);
+
+        String encryptedNewPassword = encryptPassword(newPassword);
+        repository.resetPassword(email, encryptedNewPassword);
+
+        return "Password reset successfully.";
+    }
+
+    @Override
+    public String updatePassword(String emailId, String currentPassword, String newPassword) {
+        Optional<UserRegistrationEntity> userOptional = repository.findByEmail(emailId);
+
+        if (userOptional.isPresent()) {
+            UserRegistrationEntity user = userOptional.get();
+
+            String decryptedPassword = decryptPassword(user.getPassword());
+
+            if (!decryptedPassword.equals(currentPassword)) {
+                return "Current password is incorrect.";
+            }
+
+            String encryptedNewPassword = encryptPassword(newPassword);
+            user.setPassword(encryptedNewPassword);
+
+            repository.passwordUpdate(emailId, encryptedNewPassword);
+
+            return "Password updated successfully.";
+        } else {
+            return "User not found with email: " + emailId;
+        }
+    }
+
 }

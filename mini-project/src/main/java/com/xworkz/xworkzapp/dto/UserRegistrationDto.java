@@ -2,8 +2,6 @@ package com.xworkz.xworkzapp.dto;
 
 import lombok.*;
 
-import javax.persistence.Column;
-
 @Getter
 @Setter
 @ToString
@@ -21,4 +19,5 @@ public class UserRegistrationDto {
     private String gender;
     private Integer age;
     private String date;
+    private Integer failedAttempts = -1;
 }

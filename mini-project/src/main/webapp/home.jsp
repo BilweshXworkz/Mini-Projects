@@ -58,12 +58,6 @@
                 <label class="form-label">Email Id</label>
                 <input type="text" name="emailId" class="form-control">
 
-                <label class="form-label">Password</label>
-                <input type="password" name="password" class="form-control">
-
-                <label class="form-label">Confirm Password</label>
-                <input type="password" name="conformPassword" class="form-control">
-
                 <label class="form-label">Location</label>
                 <input type="text" name="location" class="form-control">
 
