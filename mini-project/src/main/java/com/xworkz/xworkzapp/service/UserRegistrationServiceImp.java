@@ -3,10 +3,15 @@ package com.xworkz.xworkzapp.service;
 import com.xworkz.xworkzapp.dto.UserRegistrationDto;
 import com.xworkz.xworkzapp.entity.UserRegistrationEntity;
 import com.xworkz.xworkzapp.repository.UserRegistrationRepository;
+import org.slf4j.ILoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -14,14 +19,19 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @Repository
 public class UserRegistrationServiceImp implements UserRegistrationService{
 
+    private static final Logger log = LoggerFactory.getLogger(UserRegistrationServiceImp.class);
     @Autowired
     UserRegistrationRepository repository;
 
@@ -30,7 +40,6 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
     @Override
     public String validAndSave(UserRegistrationDto dto) {
         String error;
-
         List<UserRegistrationEntity> allUsers = repository.findAll();
 
         List<String> duplicateFields = new ArrayList<>();
@@ -43,6 +52,10 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
 
         if (!duplicateFields.isEmpty()) {
             return "User already exists with " + String.join(", ", duplicateFields);
+        }
+
+        if ((error = validateName(dto.getName())) != null){
+            return "Name is not valid" +error;
         }
 
         String randomPassword = generateRandomNumber();
@@ -66,6 +79,7 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
         return "Your account is created successfully. Use this password to log in: " + randomPassword;
     }
 
+
     private String validateName(String name) {
         if (name == null || name.trim().isEmpty()) return "Name cannot be empty";
         name = name.trim();
@@ -74,6 +88,7 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
         if (!name.matches("[A-Za-z ]+")) return "Name should not have any special characters or numbers";
         return null;
     }
+
 
     private String validatePhoneNumber(Long phoneNumber) {
         if (phoneNumber == null) return "Phone number cannot be null";
@@ -86,6 +101,7 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
         return null;
     }
 
+
     private String validateEmail(String email) {
         if (email == null || email.trim().isEmpty()) return "Email cannot be empty";
 //        String emailRegex = "^(?=.*[a-z])(?=.*\\d)(?=.*[@.])[a-z\\d@.]+@[a-z]+\\.[a-z]{2,6}$";
@@ -95,6 +111,7 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
         }
         return null;
     }
+
 
     private String generateRandomNumber() {
         int num = 8;
@@ -122,6 +139,7 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
     }
 
 
+
     public String validatePassword(String password) {
         if (password == null || password.length() < 6)
             return "Password must be at least 6 characters long";
@@ -132,6 +150,7 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
         }
         return null;
     }
+
 
     private String encryptPassword(String password) {
         try {
@@ -144,6 +163,7 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
             throw new RuntimeException("Error encrypting password", e);
         }
     }
+
 
     private String decryptPassword(String encryptedPassword) {
         try {
@@ -168,7 +188,7 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
 
         if (user.getFailedAttempts() != null && user.getFailedAttempts() == -1) {
             System.out.println("User needs to reset password.");
-            return new UserRegistrationEntity(); // Return empty user to indicate reset
+            return new UserRegistrationEntity();
         }
 
         if (user.getAccountLockedUntil() != null && user.getAccountLockedUntil().isAfter(LocalDateTime.now())) {
@@ -187,6 +207,7 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
         return user;
     }
 
+
     @Override
     public UserRegistrationDto fetchByEmail(String emailId) {
         if (emailId != null){
@@ -201,6 +222,7 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
         }
         return null;
     }
+
 
     @Override
     public Boolean updateUser(UserRegistrationDto dto) {
@@ -225,6 +247,7 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
         return repository.saveUpdate(entity, updatePassword);
     }
 
+
     public String updatePassword(String emailId, String newPassword) {
         Optional<UserRegistrationEntity> userOptional = repository.findByEmail(emailId);
         if (userOptional.isPresent()){
@@ -238,6 +261,7 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
             return "User not found with email: " + emailId;
         }
     }
+
 
     @Override
     public String resetPassword(String email, String currentPassword, String newPassword) {
@@ -259,6 +283,7 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
 
         return "Password reset successfully.";
     }
+
 
     @Override
     public String updatePassword(String emailId, String currentPassword, String newPassword) {
@@ -284,6 +309,7 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
         }
     }
 
+
     @Override
     public void deleteByEmailId(String emailId) {
         repository.deleteEmail(emailId);
@@ -295,42 +321,42 @@ public class UserRegistrationServiceImp implements UserRegistrationService{
         }
     }
 
+
     public static void sendAuthenticateEmail(String emailId, String randomPassword) {
 
         final String username = "bilweshbinay1025@gmail.com";
-        final String password = "lcdi pvao kojd mzhk";
+        final String password = "svdg oahn hluo sjhf";
 
         Properties prop = new Properties();
         prop.put("mail.smtp.host", "smtp.gmail.com");
         prop.put("mail.smtp.port", "587");
         prop.put("mail.smtp.auth", "true");
-        prop.put("mail.smtp.starttls.enable", "true"); //TLS
+        prop.put("mail.smtp.starttls.enable", "true");
 
-        Session session = Session.getInstance(prop,
-                new javax.mail.Authenticator() {
+        Session session = Session.getInstance(prop, new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(username, password);
                     }
                 });
-
         try {
+            if (emailId == null || emailId.isEmpty()) {
+                throw new IllegalArgumentException("Recipient email cannot be null or empty");
+            }
 
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("from@gmail.com"));
-            message.setRecipients(
-                    Message.RecipientType.TO,
-                    InternetAddress.parse("to_username_a@gmail.com, to_username_b@yahoo.com")
-            );
-            message.setSubject("Testing Gmail TLS");
-            message.setText("Dear Mail Crawler,"
-                    + "\n\n Please do not spam my email!");
+            message.setFrom(new InternetAddress(username));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailId));
+            message.setSubject("This message for OTP");
+            message.setText("Your Password : - " +randomPassword);
 
+            System.out.println("Send email to : "+emailId);
             Transport.send(message);
+            System.out.println("Email sent successfully");
 
             System.out.println("Done");
 
         } catch (MessagingException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 

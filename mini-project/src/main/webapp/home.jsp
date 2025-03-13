@@ -51,6 +51,9 @@
             <div class="mb-3">
                 <label class="form-label">Name</label>
                 <input type="text" name="name" class="form-control">
+                 <small class="text-danger">
+                     ${not empty errorMap ? errorMap['name'] : ''}
+                 </small>
 
                 <label class="form-label">Phone Number</label>
                 <input type="text" name="phoneNumber" class="form-control">

@@ -7,12 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @RequestMapping("/")
@@ -32,7 +36,13 @@ public class UserRegistrationController {
     }
 
     @RequestMapping ("addUser")
-    public String addUser(UserRegistrationDto dto, Model model){
+    public String addUser(@Valid UserRegistrationDto dto, Model model, BindingResult bindingResult){
+        Map<String, String> errorMap = new HashMap<>();
+
+        if (dto.getName() == null || dto.getName().isEmpty()) {
+            errorMap.put("name", "Name is required");
+        }
+
         String errorMessage = userRegistrationService.validAndSave(dto);
         if (errorMessage != null){
             model.addAttribute("error", errorMessage);
